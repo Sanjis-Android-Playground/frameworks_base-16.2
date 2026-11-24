@@ -88,8 +88,8 @@ import com.android.systemui.qs.panels.shared.model.LunarisQsBluetoothTileStyle
 import com.android.systemui.qs.panels.ui.compose.AxTileDefaults.InactiveCornerRadius
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.longPressLabelMoreDetails
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.longPressLabelSettings
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.CircleTileContent
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.DualTargetTileStyle
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.SmallTileContent
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.TileColors
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.bounceScale
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberDualTargetTileStyle
@@ -308,10 +308,11 @@ fun ContentScope.AxTile(
                 ) { isCompact ->
                     Box(Modifier.fillMaxSize()) {
                         if (isCompact) {
-                            SmallTileContent(
+                            CircleTileContent(
                                 iconProvider = iconProvider,
+                                secondaryLabel = uiState.secondaryLabel,
                                 color = colors.icon,
-                                size = { compactIconSize },
+                                iconSize = compactIconSize,
                                 modifier =
                                     Modifier.align(Alignment.Center).bounceScale {
                                         contentBounceable.iconBounceScale

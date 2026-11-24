@@ -411,8 +411,9 @@ fun ContentScope.Tile(
                     ) {
                         val iconProvider: Context.() -> Icon = { getTileIcon(icon = icon) }
                         if (!classicStyle) {
-                            SmallTileContent(
+                            CircleTileContent(
                                 iconProvider = iconProvider,
+                                secondaryLabel = uiState.secondaryLabel,
                                 color = colors.icon,
                                 modifier = Modifier.bounceScale {
                                     contentBounceable.iconBounceScale

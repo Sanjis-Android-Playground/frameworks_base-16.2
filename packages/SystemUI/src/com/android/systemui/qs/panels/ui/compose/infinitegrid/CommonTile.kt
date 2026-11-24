@@ -353,6 +353,50 @@ fun LargeTileLabels(
     }
 }
 
+/**
+ * Content of a circular tile. Round tiles are icon only otherwise, which loses information such as
+ * the current refresh rate, so the tile's secondary label is drawn under the icon.
+ */
+@Composable
+fun CircleTileContent(
+    iconProvider: Context.() -> Icon,
+    secondaryLabel: String,
+    color: Color,
+    modifier: Modifier = Modifier,
+    iconSize: Dp = CommonTileDefaults.IconSize,
+) {
+    if (secondaryLabel.isEmpty()) {
+        SmallTileContent(
+            iconProvider = iconProvider,
+            color = color,
+            modifier = modifier,
+            size = { iconSize },
+        )
+        return
+    }
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
+        // Leave room for the label, which sits inside the same circle.
+        SmallTileContent(
+            iconProvider = iconProvider,
+            color = color,
+            size = { minOf(iconSize, 20.dp) },
+        )
+        BasicText(
+            text = secondaryLabel,
+            style =
+                MaterialTheme.typography.labelSmall.copy(
+                    fontSize = 10.sp,
+                    letterSpacing = 0.sp,
+                    textAlign = TextAlign.Center,
+                ),
+            color = { color },
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth(0.85f),
+        )
+    }
+}
+
 @Composable
 fun SmallTileContent(
     iconProvider: Context.() -> Icon,
