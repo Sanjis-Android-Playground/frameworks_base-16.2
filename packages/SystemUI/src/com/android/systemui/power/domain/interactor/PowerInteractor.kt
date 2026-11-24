@@ -85,6 +85,16 @@ constructor(
     /** The screen state, related to power and controlled by [DozeScreenState] */
     val dozeScreenState: StateFlow<DozeScreenStateModel> = repository.dozeScreenState.asStateFlow()
 
+    @Volatile private var screenOffBeforeWake: Boolean? = null
+
+    val isScreenOffBeforeWake: Boolean
+        get() =
+            screenOffBeforeWake
+                ?: (dozeScreenState.value == DozeScreenStateModel.OFF &&
+                    (detailedWakefulness.value.internalWakefulnessState ==
+                        WakefulnessState.ASLEEP ||
+                        screenPowerState.value == ScreenPowerState.SCREEN_OFF))
+
     /**
      * Notifies the power interactor that a user touch happened.
      *
@@ -156,6 +166,8 @@ constructor(
         @PowerManager.WakeReason reason: Int,
         powerButtonLaunchGestureTriggeredOnWakeUp: Boolean,
     ) {
+        screenOffBeforeWake = isScreenOffBeforeWake
+
         // If the launch gesture was previously detected, either via onCameraLaunchGestureDetected
         // or onFinishedGoingToSleep(), carry that state forward. It will be reset by the next
         // onStartedGoingToSleep.
@@ -192,6 +204,7 @@ constructor(
      * directly.
      */
     fun onStartedGoingToSleep(@PowerManager.GoToSleepReason reason: Int) {
+        screenOffBeforeWake = null
         repository.updateWakefulness(
             rawState = WakefulnessState.STARTING_TO_SLEEP,
             lastSleepReason = WakeSleepReason.fromPowerManagerSleepReason(reason),
